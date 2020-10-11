@@ -71,7 +71,7 @@ jobs:
         ln -f -s `which glibtoolize` $HOME/.local/bin/libtoolize
         ln -f -s `which glibtool` $HOME/.local/bin/libtool
         hash -r
-        echo "::set-env name=BOOST_ROOT::/usr/local/opt/boost@1.60"
+        #echo "::set-env name=BOOST_ROOT::/usr/local/opt/boost@1.60"
         echo "::set-env name=NUM_CPUS::$((`sysctl -n hw.logicalcpu` * 4))"
         echo "::set-env name=PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig"
         echo "::set-env name=CPPFLAGS_gerbv::-DQUARTZ"
