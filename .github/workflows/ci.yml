@@ -195,8 +195,6 @@ jobs:
     - name: Autoreconf pcb2gcode
       run: autoreconf -fvi
     - name: Configure pcb2gcode
-      # pcb2gcode_CPPFLAGS_EXTRA=-Werror 
-      # macos : -Wnolanguage-extension-token -DBOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
       run: >-
         export CPPFLAGS_EXTRA="-Werror";
         if [[ $RUNNER_OS == "macOS" ]]; then
