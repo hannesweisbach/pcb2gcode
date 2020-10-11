@@ -111,7 +111,7 @@ jobs:
           popd
           popd
         fi
-        echo "::set-env name=BOOST_ROOT::$(echo ${HOME}/.local)"
+        echo "BOOST_ROOT=$(echo ${HOME}/.local)" >> $GITHUB_ENV
     - name: Build and install geos
       if: matrix.os == 'ubuntu' && matrix.geos != 'none'
       env:
