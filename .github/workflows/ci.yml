@@ -19,8 +19,6 @@ jobs:
           - os: macos
             boost: 1_60
           - os: macos
-            boost: 1_66
-          - os: macos
             compiler: 'g++-8'
         include:
           - os: ubuntu
@@ -198,10 +196,10 @@ jobs:
       # pcb2gcode_CPPFLAGS_EXTRA=-Werror 
       # macos : -Wnolanguage-extension-token -DBOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
       run: >-
-        export CPPFLAGS_EXTRA="-Werror"
+        export CPPFLAGS_EXTRA="-Werror";
         if [[ $RUNNER_OS == "macOS" ]]; then
           export CPPFLAGS_EXTRA="$CPPFLAGS_EXTRA -Wnolanguage-extension-token -DBOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING"
-        fi
+        fi;
         ./configure pcb2gcode_CPPFLAGS_EXTRA=$CPPFLAGS_EXTRA
         --disable-dependency-tracking
         --disable-silent-rules
