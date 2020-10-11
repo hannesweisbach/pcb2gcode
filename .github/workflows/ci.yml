@@ -17,7 +17,7 @@ jobs:
         compiler: ['g++', 'g++-8', 'clang++']
         exclude:
           - os: macos
-            boost: 1_66
+            boost: 1_60, 1_66
           - os: macos
             compiler: 'g++-8'
         include:
@@ -71,11 +71,10 @@ jobs:
         ln -f -s `which glibtoolize` $HOME/.local/bin/libtoolize
         ln -f -s `which glibtool` $HOME/.local/bin/libtool
         hash -r
-        echo "::set-env name=NUM_CPUS::$((`sysctl -n hw.logicalcpu` * 4))"
-        echo "::set-env name=PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig"
-        echo "::set-env name=CPPFLAGS_gerbv::-DQUARTZ"
-        echo "::set-env name=PATH::/usr/local/opt/gettext/bin:$PATH"
-    #echo "::set-env name=BOOST_ROOT::/usr/local/opt/boost@1.60"
+     # echo "::set-env name=NUM_CPUS::$((`sysctl -n hw.logicalcpu` * 4))"
+     #   echo "::set-env name=PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig"
+     #   echo "::set-env name=CPPFLAGS_gerbv::-DQUARTZ"
+     #   echo "::set-env name=PATH::/usr/local/opt/gettext/bin:$PATH"
     - name: Macos geos
       if: matrix.geos != 'none' && matrix.os == 'macos'
       run:
@@ -194,9 +193,14 @@ jobs:
     - name: Autoreconf pcb2gcode
       run: autoreconf -fvi
     - name: Configure pcb2gcode
-      # pcb2gcode_CPPFLAGS_EXTRA=-Werror
+      # pcb2gcode_CPPFLAGS_EXTRA=-Werror 
+      # macos : -Wnolanguage-extension-token -DBOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING
       run: >-
-        ./configure 
+        export CPPFLAGS_EXTRA="-Werror"
+        if [[ $RUNNER_OS == "macOS" ]]; then
+          export CPPFLAGS_EXTRA="$CPPFLAGS_EXTRA -Wnolanguage-extension-token -DBOOST_GEOMETRY_DISABLE_DEPRECATED_03_WARNING"
+        fi
+        ./configure pcb2gcode_CPPFLAGS_EXTRA=$CPPFLAGS_EXTRA
         --disable-dependency-tracking
         --disable-silent-rules
         --enable-static-boost
