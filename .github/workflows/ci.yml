@@ -18,6 +18,8 @@ jobs:
         exclude:
           - os: macos
             boost: 1_60
+          - os: macos
+            boost: 1_66
         include:
           - os: ubuntu
             boost: 1_66
@@ -35,20 +37,20 @@ jobs:
       run: |
         mkdir -p $HOME/.local/bin
         mkdir -p $HOME/.local/lib/pkgconfig
-        echo "::set-env name=PKG_CONFIG_PATH::$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH"
-        echo "::set-env name=LD_LIBRARY_PATH::$HOME/.local/lib:$LD_LIBRARY_PATH"
-        echo "::set-env name=PATH::$HOME/.local/bin:$PATH"
+        echo "PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=$HOME/.local/lib:$LD_LIBRARY_PATH" >>  $GITHUB_ENV
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Linux specific setup
       if: matrix.os == 'ubuntu'
       run: |
         sudo apt-get update
         sudo apt-get install libgtkmm-2.4-dev moreutils autopoint libc6-dbg
-        echo "::set-env name=NUM_CPUS::$((`nproc --all` * 4))"
+        echo "NUM_CPUS=$((`nproc --all` * 4))" >> $GITHUB_ENV
     - name: Set clang as default compiler
       if: matrix.compiler == 'clang++'
       run: |
-        echo "::set-env name=CC::`which clang`"
-        echo "::set-env name=CXX::`which clang++`"
+        echo "CC=`which clang`" >> $GITHUB_ENV
+        echo "CXX=`which clang++`" >> $GITHUB_ENV
     - name: g++-8 specific setup
       if: matrix.compiler == 'g++-8'
       run: |
@@ -59,6 +61,8 @@ jobs:
           sudo update-alternatives --set gcc /usr/bin/gcc-8
         elif [[ $RUNNER_OS == "macOS" ]]; then
           brew install gcc@8
+          echo "CC=`which gcc-8`" >> $GITHUB_ENV
+          echo "CXX=`which g++-8`" >> $GITHUB_ENV
         fi
     - name: Macos specific setup
       if: matrix.os == 'macos'
@@ -83,7 +87,7 @@ jobs:
         brew install geos
     - name: Sanitize cache key
       id: sanitize-key
-      run: echo "::set-output name=key::$(echo '${{ matrix.os }}_${{ matrix.boost }}_${{ matrix.compiler }}_${{ matrix.geos }}' | sed 's/+/plus/g')"
+      run: echo "key=$(echo '${{ matrix.os }}_${{ matrix.boost }}_${{ matrix.compiler }}_${{ matrix.geos }}' | sed 's/+/plus/g')" >> $GITHUB_ENV
     - name: Cache .local
       uses: actions/cache@v1
       with:
