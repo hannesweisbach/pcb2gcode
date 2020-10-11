@@ -19,7 +19,7 @@ jobs:
           - os: macos
             boost: 1_60
           - os: macos
-            boost: 1_66
+            boost: g++-8
         include:
           - os: ubuntu
             boost: 1_66
@@ -77,10 +77,9 @@ jobs:
         ln -f -s `which glibtoolize` $HOME/.local/bin/libtoolize
         ln -f -s `which glibtool` $HOME/.local/bin/libtool
         hash -r
-     # echo "::set-env name=NUM_CPUS::$((`sysctl -n hw.logicalcpu` * 4))"
-     #   echo "::set-env name=PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig"
-     #   echo "::set-env name=CPPFLAGS_gerbv::-DQUARTZ"
-     #   echo "::set-env name=PATH::/usr/local/opt/gettext/bin:$PATH"
+        echo "NUM_CPUS=$((`sysctl -n hw.logicalcpu` * 4))" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig" >> $GITHUB_ENV
+        echo "/usr/local/opt/gettext/bin" >> $GITHUB_PATH
     - name: Macos geos
       if: matrix.geos != 'none' && matrix.os == 'macos'
       run:
@@ -151,6 +150,9 @@ jobs:
     - name: Install gerbv
       run: |
         if ! gerbv --version; then
+          if [[ $RUNNER_OS == "macOS" ]]; then
+            export CPPFLAGS_gerbv="-DQUARTZ"
+          fi
           pushd ~
           git clone --depth=1 https://github.com/eyal0/gerbv.git
           pushd gerbv
