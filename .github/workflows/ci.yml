@@ -65,7 +65,7 @@ jobs:
         brew upgrade python@3.7
         brew reinstall -s libtool
         brew unlink parallel
-        brew install boost@1.60 gtkmm moreutils gettext librsvg autoconf automake pkg-config
+        brew install boost gtkmm moreutils gettext librsvg autoconf automake pkg-config
         brew upgrade wget
         hash -r
         ln -f -s `which glibtoolize` $HOME/.local/bin/libtoolize
