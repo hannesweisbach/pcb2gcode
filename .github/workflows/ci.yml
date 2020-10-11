@@ -87,7 +87,7 @@ jobs:
         brew install geos
     - name: Sanitize cache key
       id: sanitize-key
-      run: echo "key=$(echo '${{ matrix.os }}_${{ matrix.boost }}_${{ matrix.compiler }}_${{ matrix.geos }}' | sed 's/+/plus/g')" >> $GITHUB_ENV
+      run: echo "::set-output name=key::$(echo '${{ matrix.os }}_${{ matrix.boost }}_${{ matrix.compiler }}_${{ matrix.geos }}' | sed 's/+/plus/g')"
     - name: Cache .local
       uses: actions/cache@v1
       with:
