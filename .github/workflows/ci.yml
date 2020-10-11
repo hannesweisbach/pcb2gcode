@@ -17,7 +17,9 @@ jobs:
         compiler: ['g++', 'g++-8', 'clang++']
         exclude:
           - os: macos
-            boost: 1_60, 1_66
+            boost: 1_60
+          - os: macos
+            boost: 1_66
           - os: macos
             compiler: 'g++-8'
         include:
