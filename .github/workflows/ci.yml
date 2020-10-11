@@ -33,6 +33,13 @@ jobs:
     steps:
     - name: Checkout pcb2gcode source
       uses: actions/checkout@v2
+    - name: Set Number of CPUs
+      run: |
+        if [[ $RUNNER_OS == "Linux" ]]; then
+          echo "NUM_CPUS=$((`nproc --all` * 4))" >> $GITHUB_ENV
+        elif [[ $RUNNER_OS == "macOS" ]]; then
+          echo "NUM_CPUS=$((`sysctl -n hw.logicalcpu` * 4))" >> $GITHUB_ENV
+        fi
     - name: Setup paths and env
       run: |
         mkdir -p $HOME/.local/bin
@@ -45,7 +52,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install libgtkmm-2.4-dev moreutils autopoint libc6-dbg
-        echo "NUM_CPUS=$((`nproc --all` * 4))" >> $GITHUB_ENV
     - name: Set clang as default compiler
       if: matrix.compiler == 'clang++'
       run: |
@@ -77,7 +83,6 @@ jobs:
         ln -f -s `which glibtoolize` $HOME/.local/bin/libtoolize
         ln -f -s `which glibtool` $HOME/.local/bin/libtool
         hash -r
-        echo "NUM_CPUS=$((`sysctl -n hw.logicalcpu` * 4))" >> $GITHUB_ENV
         echo "PKG_CONFIG_PATH::$PKG_CONFIG_PATH:/usr/local/opt/libffi/lib/pkgconfig" >> $GITHUB_ENV
         echo "/usr/local/opt/gettext/bin" >> $GITHUB_PATH
     - name: Macos geos
